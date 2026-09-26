@@ -21,7 +21,7 @@
 **Diff-Kalman** is a hybrid Kalman-style filtering framework that introduces difference-driven corrections in both the prediction and update phases while preserving the recursive predict-update structure.
 
 <p align="center">
-  <img src="diff_kalman_framework.png" width="100%">
+  <img src="assets/diff_kalman_framework.png" width="100%">
 </p>
 
 <p align="center">
