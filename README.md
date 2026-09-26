@@ -9,16 +9,11 @@ Difference-Driven Learning for Structure-Preserving Kalman Filtering
 </p>
 
 <p align="center">
-  <a href="https://openreview.net/forum?id=kk5tmlhwi6">
-    <img src="https://img.shields.io/badge/Paper-OpenReview-B31B1B?style=flat-square" alt="Paper">
-  </a>
   <img src="https://img.shields.io/badge/NeurIPS-2026-6B4EFF?style=flat-square" alt="NeurIPS 2026">
   <img src="https://img.shields.io/badge/Code-Coming%20Soon-lightgrey?style=flat-square" alt="Code Coming Soon">
 </p>
 
 <p align="center">
-  <a href="https://openreview.net/forum?id=kk5tmlhwi6"><b>Paper</b></a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="https://github.com/heu-gj/Diff-Kalman"><b>Repository</b></a>
 </p>
 
