@@ -18,11 +18,20 @@
 
 ---
 
+## News
+
+- **Sep. 2026:** Diff-Kalman was accepted to the **NeurIPS 2026 Main Track** as a poster.
+- **Code release:** The implementation is being cleaned and documented for public release.
+
 ## Overview
 
 **Diff-Kalman** is a hybrid Kalman-style filtering framework that introduces **difference-driven corrections** in both the prediction and update phases while preserving the recursive predict-update structure.
 
-Instead of directly predicting a full Kalman gain or covariance-related matrix, Diff-Kalman learns structured correction terms. In the prediction phase, it combines model-based dynamics with a learned state increment. In the update phase, it uses learned scaling to calibrate uncertainty and correct the Kalman gain.
+Rather than directly predicting a full Kalman gain or an unrestricted uncertainty matrix, Diff-Kalman learns structured correction terms:
+
+- **GSP-α** fuses a Transformer-predicted state increment with the model-based increment.
+- **GSP-P** calibrates model-propagated uncertainty while preserving its positive-semidefinite form.
+- **GSP-K** corrects the Kalman gain through structured scaling based on the innovation and prior uncertainty.
 
 The framework is designed for state-estimation problems with nonlinear dynamics, model mismatch, or inaccurate noise statistics.
 
@@ -30,64 +39,57 @@ The framework is designed for state-estimation problems with nonlinear dynamics,
 
 Diff-Kalman contains two main phases.
 
-### Prediction
+### Prediction Phase
 
-Given historical states and their first-order differences:
+1. A Transformer models historical states and their first-order differences.
+2. The Transformer predicts a **neural state increment**.
+3. **GSP-α** fuses the neural increment with the **model-based increment**.
+4. **GSP-P** calibrates the model-propagated uncertainty.
 
-1. A Transformer predicts a **neural state increment**.
-2. **GSP-\(\alpha\)** fuses the neural increment with the **model-based increment**.
-3. **GSP-P** calibrates the model-propagated uncertainty while preserving its positive-semidefinite form.
+### Update Phase
 
-### Update
-
-Given the current innovation and prior uncertainty:
-
-1. **GSP-K** generates a structured scaling factor.
-2. The scaling is used to correct the Kalman gain.
-3. The corrected gain is used in the recursive state update.
+1. The current observation produces the innovation.
+2. **GSP-K** generates a structured scaling factor from the innovation and prior uncertainty.
+3. The scaling corrects the Kalman gain.
+4. The corrected gain is used in the recursive state update.
 
 A compact view of the pipeline is:
 
 ```text
 Historical states + state differences
-                │
-                ▼
+                |
+                v
            Transformer
-                │
-                ▼
+                |
+                v
        Neural state increment
-                │
-                ├──────────────┐
-                │              │
-                ▼              ▼
+                |
+                +----------------+
+                |                |
+                v                v
              GSP-α      Model-based increment
-                │              │
-                └──────┬───────┘
-                       ▼
-              Corrected prior state
-                       │
-             ┌─────────┴─────────┐
-             ▼                   ▼
-           GSP-P              Innovation
-             │                   │
-             ▼                   ▼
-  Calibrated prior uncertainty  GSP-K
-             │                   │
-             └─────────┬─────────┘
-                       ▼
-               Corrected Kalman gain
-                       │
-                       ▼
-                Posterior estimate
+                |                |
+                +-------+--------+
+                        |
+                        v
+               Corrected prior state
+                        |
+              +---------+---------+
+              |                   |
+              v                   v
+            GSP-P             Innovation
+              |                   |
+              v                   v
+ Calibrated prior uncertainty   GSP-K
+              |                   |
+              +---------+---------+
+                        |
+                        v
+                Corrected Kalman gain
+                        |
+                        v
+                 Posterior estimate
 ```
-
-## Key Features
-
-- **Difference-driven prediction.** State differences are used to model local dynamics and predict state increments.
-- **Model-data fusion.** Learned increments are fused with model-based increments rather than replacing the dynamic model.
-- **Structured uncertainty calibration.** GSP-P rescales the model-propagated uncertainty while preserving positive semidefiniteness.
-- **Gain correction.** GSP-K applies structured scaling to the Kalman gain based on the innovation and prior uncertainty.
-- **Recursive filtering structure.** The method retains a Kalman-style prediction-update recursion instead of replacing the filter with an unconstrained end-to-end network.
 
 ## Experiments
 
@@ -96,43 +98,52 @@ The current manuscript evaluates Diff-Kalman on:
 - **MOT trajectories** extracted from MOT17 for linear state estimation.
 - **Lorenz dynamics** for nonlinear and chaotic state estimation.
 
-The experiments compare Diff-Kalman with classical filters and learning-based Kalman methods, and include ablation and robustness studies.
+The paper includes comparisons with classical and learning-based filtering methods, as well as ablation and robustness studies.
 
-Additional experiments and the final camera-ready results will be reflected in this repository.
+Camera-ready experiments and the corresponding reproduction scripts will be added to this repository with the public code release.
 
-## Repository Status
-
-This repository is being prepared for the camera-ready release.
+## Code Release Status
 
 - [x] NeurIPS 2026 Main Track acceptance
-- [x] Project repository
+- [x] Public project repository
 - [ ] Camera-ready paper
+- [ ] Environment file
 - [ ] Training code
 - [ ] Evaluation code
+- [ ] Dataset preparation scripts
 - [ ] Configuration files
 - [ ] Pretrained checkpoints
-- [ ] Reproduction scripts
+- [ ] Table/figure reproduction scripts
 
-> **Code release.** The implementation is currently being cleaned and documented. Training and evaluation code, configurations, and reproduction instructions will be released with the final version.
+## Installation
 
-## Reproducibility
+Installation instructions will be added with the code release.
 
-The experiments in the manuscript were conducted with:
+The experiments in the current manuscript use:
 
 - Python 3.10
 - PyTorch 2.5.1
 - CUDA 12.1
-- NVIDIA GeForce RTX 4090 D
 
-Exact environments, random seeds, dataset preparation scripts, and evaluation commands will be included in the code release.
+## Data Preparation
+
+Dataset preparation instructions will be provided for each experiment at release.
+
+## Training and Evaluation
+
+Training and evaluation commands will be documented once the code is public. We will provide separate entry points or configuration files for the main experimental settings.
+
+## Reproducing the Paper
+
+The release will include the scripts and configurations needed to reproduce the main tables and figures reported in the camera-ready paper.
 
 ## Citation
 
-Citation information will be updated when the camera-ready version is available.
+Citation information will be added after the camera-ready metadata is finalized.
 
 ## Contact
 
-For questions about the paper or implementation, please open an issue in this repository.
+For questions about the paper, code, or reproducibility, please open an issue in this repository.
 
 ---
 
